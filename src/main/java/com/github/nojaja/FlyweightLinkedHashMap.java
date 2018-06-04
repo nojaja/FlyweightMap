@@ -75,19 +75,6 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 		return (V)result;
 	}
 
-	//	public V get(Object key) {
-	//		if(super.containsKey(key)){
-	//			return super.get(key);
-	//		}
-	//		V result = (V) sourceMap.get(key);
-	//		
-	//		if(result instanceof Map){
-	//			result = (V) new DifferenceLinkedHashMap<K,V>((Map<K, V>)result);
-	//			V put = super.put((K) key, result);
-	//		}
-	//		return result;
-	//	}
-
 	@Override
 	public void clear() {
 		super.clear();
@@ -110,8 +97,10 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 	}
 
 	public Set<Map.Entry<K,V>> entrySet() {
-		Set<Map.Entry<K,V>> es = sourceMap.entrySet();
+		Set<Map.Entry<K,V>> srces = sourceMap.entrySet();
+		Set<java.util.Map.Entry<K, V>> es = new HashSet<java.util.Map.Entry<K, V>>();
+		es.addAll(srces);
 		es.addAll(super.entrySet());
-		return es;
+		return (Set<java.util.Map.Entry<K, V>>) es;
 	}
 }

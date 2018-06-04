@@ -5,11 +5,55 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.arnx.jsonic.JSON;
 
 
 public class basic01動作テスト {
+
+
+
+
+	@Test
+	public void entrySet() throws Exception {
+		System.out.println("=========================================");
+		Util.getMethodName();
+		String dir = System.getProperty("user.dir");
+		//HashMap inputdata = Util.readJson(dir+"/MOCK_DATA.json");
+		HashMap<?, ?> inputdata = Util.readJson(dir+"/amedas-rain-1h-recent.json");
+
+		FlyweightLinkedHashMap<String, Object> data1 = new FlyweightLinkedHashMap<String, Object>((Map)inputdata);
+
+		Util.begin("keySet");
+		try {
+			// 遅い       
+			for (String key : data1.keySet()) {
+				data1.get(key);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e);
+		}
+		Util.end();
+
+		Util.begin("entrySet");
+		try {
+			// 早い
+			for (FlyweightLinkedHashMap.Entry<String, Object> entry : data1.entrySet()) {
+				entry.getValue();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e);
+		}
+
+		Util.end();
+
+		Util.printFreeMemory();
+		System.out.println("=========================================");
+
+	}
 
 	@Test
 	public void cloneした場合と同じデータになっていること() throws Exception {
@@ -91,7 +135,7 @@ public class basic01動作テスト {
 		System.out.println("元変更後："+customClass13); 
 
 		assertTrue(customClass1==customClass13);
-		
+
 		assertTrue(customClass12.equals("hoge"));
 		assertTrue(!customClass13.equals("hoge"));
 
@@ -118,10 +162,10 @@ public class basic01動作テスト {
 		String customClass12 = (String) div_frame_hedder2.get("customClass1");
 
 		String customClass13 = (String) div_frame_hedder3.get("customClass1");
-		
+
 		System.out.println("元変更後："+customClass13); 
 		System.out.println("先変更後："+customClass12); 
-		
+
 		assertTrue(customClass12.equals("hoge"));
 		assertTrue(customClass13.equals("hoge"));
 
@@ -168,7 +212,7 @@ public class basic01動作テスト {
 			value2 = (String) option.get("value");
 			System.out.println("元変更後："+value2); 
 		}
-		
+
 		assertTrue("元と先で値が変わっている事",!value1.equals(value2));
 		Util.end();
 		System.out.println("=========================================");
