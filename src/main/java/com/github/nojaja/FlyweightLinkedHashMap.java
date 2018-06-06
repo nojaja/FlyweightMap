@@ -39,22 +39,22 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 
 	public FlyweightLinkedHashMap(Map<K, V> source,int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
-		sourceMap = source;
+		this.sourceMap = source;
 	}
 
 	public FlyweightLinkedHashMap(Map<K, V> source,int initialCapacity) {
 		super(initialCapacity);
-		sourceMap = source;
+		this.sourceMap = source;
 	}
 
 	public FlyweightLinkedHashMap(Map<K, V> source) {
 		super();
-		sourceMap = source;
+		this.sourceMap = source;
 	}
 
 	public FlyweightLinkedHashMap(Map<K, V> source,Map<? extends K, ? extends V> m) {
 		super(m);
-		sourceMap = source;
+		this.sourceMap = source;
 	}
 
 
@@ -64,9 +64,9 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 			return (V)result;
 		}
 
-		if(removeKs.contains(key)) return null;
+		if(this.removeKs.contains(key)) return null;
 
-		result = (V) sourceMap.get(key);
+		result = (V) this.sourceMap.get(key);
 
 		if(result instanceof Map){
 			result = new FlyweightLinkedHashMap<K,V>((Map<K, V>)result);
@@ -77,12 +77,15 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 		}
 		return (V)result;
 	}
-	
 	@Override
-    public int size() {
-        return this.keySet().size();
-    }
-	
+	public boolean isEmpty() {
+		return this.size() == 0;
+	}
+	@Override
+	public int size() {
+		return this.keySet().size();
+	}
+
 	@Override
 	public void clear() {
 		super.clear();
@@ -91,35 +94,35 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 
 	@Override
 	public V put(K key, V value) {
-		removeKs.remove(key);
+		this.removeKs.remove(key);
 		return super.put(key, value);
 	}
 
 	@Override
 	public void putAll(Map<? extends K, ? extends V> m) {
-		removeKs.removeAll(m.keySet());
+		this.removeKs.removeAll(m.keySet());
 		super.putAll(m);
 	}
 
 	@Override
 	public V remove(Object key) {
-		if(super.containsKey(key) || sourceMap.containsKey(key)){
-			removeKs.add((K) key);
+		if(super.containsKey(key) || this.sourceMap.containsKey(key)){
+			this.removeKs.add((K) key);
 		}
 		return super.remove(key);
 	}
 
 	@Override
 	public boolean containsKey(Object key) {
-		if(removeKs.contains(key)) return false ;//if remove key then false
+		if(this.removeKs.contains(key)) return false ;//if remove key then false
 		if(super.containsKey(key)) return true;
-		if(sourceMap.containsKey(key)) return true;
+		if(this.sourceMap.containsKey(key)) return true;
 		return false;
 	}
 
 	@Override
 	public Set<K> keySet() {
-		Set<K> sourceKs = sourceMap.keySet();
+		Set<K> sourceKs = this.sourceMap.keySet();
 		Set<K> ks = new LinkedHashSet<K>();
 		ks.addAll(sourceKs);
 		ks.addAll(super.keySet());
@@ -129,7 +132,7 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
-		Set<Map.Entry<K,V>> sourceEs = sourceMap.entrySet();
+		Set<Map.Entry<K,V>> sourceEs = this.sourceMap.entrySet();
 		Set<Map.Entry<K, V>> es = new LinkedHashSet<Map.Entry<K, V>>();
 		es.addAll(sourceEs);
 		es.addAll(super.entrySet());

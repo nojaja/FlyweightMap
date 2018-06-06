@@ -47,6 +47,8 @@ public class basic01動作テスト {
 		
 		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
 
+		assertFalse("作成直後でも空でないこと",fmap.isEmpty());
+		
 		fmap.put("bbb", "bbb");
 		assertEquals("sizeで合計件数が取れること",3,fmap.size());
 		assertEquals("親の件数が変わってないこと",2,data.size());
