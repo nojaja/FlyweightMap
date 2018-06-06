@@ -5,18 +5,118 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import net.arnx.jsonic.JSON;
 
 
 public class basic01動作テスト {
 
-
-
-
 	@Test
-	public void entrySet() throws Exception {
+	public void clearテスト() {
+		System.out.println("=========================================");
+		Util.getMethodName();
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("aaa", "bbb");
+		data.put("ccc", "ccc");
+		
+		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
+		
+		fmap.clear();
+		assertFalse("キーを更新したあと、clearしたら消えてること",fmap.containsKey("ccc"));
+		assertTrue("キーを更新したあと、clearしても親は残ってること",data.containsKey("ccc"));
+		
+		fmap.put("aaa", "zzz");
+		fmap.clear();
+		assertFalse("キーを更新したあと、clearしたら消えてること",fmap.containsKey("aaa"));
+		assertTrue("キーを更新したあと、clearしても親は残ってること",data.containsKey("aaa"));
+
+		assertEquals("clearしたら、0件になってること",0, fmap.size());
+
+	}
+	
+	@Test
+	public void sizeテスト() {
+		System.out.println("=========================================");
+		Util.getMethodName();
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("aaa", "bbb");
+		data.put("ccc", "ccc");
+		
+		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
+
+		fmap.put("bbb", "bbb");
+		assertEquals("sizeで合計件数が取れること",3,fmap.size());
+		assertEquals("親の件数が変わってないこと",2,data.size());
+		
+		fmap.put("aaa", "zzz");
+		assertEquals("キーを更新したあと、sizeで合計件数が取れること",3,fmap.size());
+
+		fmap.clear();
+		assertEquals("clearしたら、0件になってること",0, fmap.size());
+
+	}
+	@Test
+	public void removeテスト() {
+		System.out.println("=========================================");
+		Util.getMethodName();
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("aaa", "bbb");
+		data.put("ccc", "ccc");
+		data.put("ddd", "ddd");
+		data.put("eee", "eee");
+		
+		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
+		fmap.put("aaa", "zzz");
+		fmap.put("fff", "fff");
+		fmap.remove("aaa");
+		assertFalse("キーを更新したあと、削除したら消えてること",fmap.containsKey("aaa"));
+		assertEquals("sizeでの件数があってること",4,fmap.size());
+		assertTrue("キーを更新したあと、削除しても親は残ってること",data.containsKey("aaa"));
+
+		fmap.put("aaa", "zzz");
+		assertTrue("消したキーをもう一度追加したら見えること",fmap.containsKey("aaa"));
+		assertEquals("sizeでの件数があってること",5,fmap.size());
+		
+		fmap.put("bbb", "bbb");
+		fmap.remove("bbb");
+		assertFalse("キーを追加して削除したら消えてること",fmap.containsKey("bbb"));
+		assertEquals("sizeでの件数があってること",5,fmap.size());
+
+		data.put("bbb", "bbb");
+		assertFalse("消したキーを親が追加しても消えていること",fmap.containsKey("bbb"));
+		assertEquals("sizeでの件数があってること",5,fmap.size());
+		
+
+		data.remove("ccc");
+		assertFalse("親がキーを削除したら消えてること",fmap.containsKey("ccc"));
+		assertEquals("sizeでの件数があってること",4,fmap.size());
+
+	}
+	
+	@Test
+	public void KeySetテスト() {
+		System.out.println("=========================================");
+		Util.getMethodName();
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("aaa", "bbb");
+		data.put("bbb", "bbb");
+		
+		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
+		fmap.put("aaa", "zzz");
+		fmap.put("ccc", "zzz");
+		Set<String> keys = fmap.keySet();
+		assertEquals(3, keys.size());
+		
+		for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
+			System.out.println(iterator.next());
+		}
+
+	}
+	@Test
+	public void entrySetテスト() throws Exception {
 		System.out.println("=========================================");
 		Util.getMethodName();
 		String dir = System.getProperty("user.dir");
@@ -178,7 +278,7 @@ public class basic01動作テスト {
 		System.out.println("=========================================");
 		Util.getMethodName();
 		String dir = System.getProperty("user.dir");
-		HashMap<?, ?> inputdata = Util.readJson(dir+"/testData_CustInqDispMobile.json");
+		HashMap<String, Object> inputdata = (HashMap<String, Object>) Util.readJson(dir+"/testData_CustInqDispMobile.json");
 
 		FlyweightLinkedHashMap test = new FlyweightLinkedHashMap(inputdata);
 		{
@@ -201,7 +301,7 @@ public class basic01動作テスト {
 		String value1;
 		{
 			ArrayList options = (ArrayList) test.get("options");
-			HashMap option = (HashMap) options.get(0);
+			HashMap<String,String> option = (HashMap<String,String>) options.get(0);
 			value1 = (String) option.get("value");
 			System.out.println("先変更後："+value1); 
 		}
@@ -217,5 +317,22 @@ public class basic01動作テスト {
 		Util.end();
 		System.out.println("=========================================");
 	}
+	
+	@Test
+	public void toStringテスト() throws Exception {
+		System.out.println("=========================================");
+		Util.getMethodName();
+		String dir = System.getProperty("user.dir");
+		HashMap<String, Object> inputdata = (HashMap<String, Object>) Util.readJson(dir+"/MOCK_DATA.json");
 
+		inputdata.put("aaa", "bbb");
+		inputdata.put("bbb", "bbb");
+		
+		FlyweightLinkedHashMap<String, Object> test = new FlyweightLinkedHashMap<String, Object>(inputdata);
+		System.out.println(inputdata.toString());
+		System.out.println(test.toString());
+		
+		assertEquals(inputdata.toString(), test.toString());
+	}
+	
 }
