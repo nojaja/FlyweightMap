@@ -57,14 +57,15 @@ public class Util {
 		return time;
 	}
 	
-	public static final void printFreeMemory() {
+	public static final long printFreeMemory() {
 		long total = Runtime.getRuntime().totalMemory();
 		System.out.println("total => " + total / 1024 + "KB");
 		long free = Runtime.getRuntime().freeMemory();
 		long used = total - free;
 		long max = Runtime.getRuntime().maxMemory();
 		System.out.println("free  => " + free / 1024 + "KB");
-		System.out.println("used  => " + (total - free) / 1024 + "KB");
+		System.out.println("used  => " + used / 1024 + "KB");
 		System.out.println("max   => " + max / 1024 + "KB");
+		return used;
 	}
 }

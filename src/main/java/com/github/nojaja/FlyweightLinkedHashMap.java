@@ -89,7 +89,8 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 	@Override
 	public void clear() {
 		super.clear();
-		sourceMap = new LinkedHashMap<K,V>();
+		this.removeKs.clear();
+		this.sourceMap = new LinkedHashMap<K,V>();
 	}
 
 	@Override
@@ -119,6 +120,13 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 		if(this.sourceMap.containsKey(key)) return true;
 		return false;
 	}
+	
+
+	@Override
+    public boolean containsValue(Object value) {
+		return super.containsValue(value);
+    	//todo
+    }
 
 	@Override
 	public Set<K> keySet() {

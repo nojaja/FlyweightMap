@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -112,8 +113,13 @@ public class basic01動作テスト {
 		Set<String> keys = fmap.keySet();
 		assertEquals(3, keys.size());
 		
+		Set<String> answer = new LinkedHashSet<String>();
+		answer.add("aaa");
+		answer.add("bbb");
+		answer.add("ccc");
+		Iterator<String> answerIterator = answer.iterator();
 		for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
-			System.out.println(iterator.next());
+			assertEquals(answerIterator.next(),iterator.next());
 		}
 
 	}
@@ -238,8 +244,8 @@ public class basic01動作テスト {
 
 		assertTrue(customClass1==customClass13);
 
-		assertTrue(customClass12.equals("hoge"));
-		assertTrue(!customClass13.equals("hoge"));
+		assertEquals("hoge", customClass12);
+		assertFalse(customClass13.equals("hoge"));
 
 		Util.end();
 		System.out.println("=========================================");
@@ -331,8 +337,8 @@ public class basic01動作テスト {
 		inputdata.put("bbb", "bbb");
 		
 		FlyweightLinkedHashMap<String, Object> test = new FlyweightLinkedHashMap<String, Object>(inputdata);
-		System.out.println(inputdata.toString());
-		System.out.println(test.toString());
+		//System.out.println(inputdata.toString());
+		//System.out.println(test.toString());
 		
 		assertEquals(inputdata.toString(), test.toString());
 	}
