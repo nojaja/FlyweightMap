@@ -46,7 +46,7 @@ implements List<E>, RandomAccess, Cloneable, java.io.Serializable {
 		Object result = super.get(index);
 
 		if(result instanceof Map){
-			result = new FlyweightLinkedHashMap((Map)result);
+			result = new FlyweightHashMap((Map)result);
 			super.set(index, (E) result);
 		}else if(result instanceof List){
 			result = new FlyweightArrayList((List)result);

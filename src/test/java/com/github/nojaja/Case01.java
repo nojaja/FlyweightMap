@@ -27,7 +27,7 @@ public class Case01 {
 				ArrayList pool = new ArrayList();
 				Util.begin("");
 				for (int i = 0; i < loop_count; i++) {
-					pool.add(new FlyweightLinkedHashMap(inputdata));
+					pool.add(new FlyweightHashMap(inputdata));
 					//DifferenceHashMap copydata1 = new DifferenceHashMap(inputdata);
 					//String inputdatatext=JSON.encode(copydata1); 
 				}

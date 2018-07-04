@@ -23,7 +23,7 @@ public class basic02パフォーマンステスト {
 			ArrayList pool = new ArrayList();
 			Util.begin("DifferenceLinkedHashMap");
 			for (int i = 0; i < loop_count; i++) {
-				pool.add(new FlyweightLinkedHashMap(inputdata));
+				pool.add(new FlyweightHashMap(inputdata));
 			}
 		}
 		Long t1 = Util.end();
@@ -65,7 +65,7 @@ public class basic02パフォーマンステスト {
 
 			Runtime.getRuntime().gc();
 			Util.begin("DifferenceLinkedHashMap");
-			FlyweightLinkedHashMap dm = new FlyweightLinkedHashMap(inputdata);
+			FlyweightHashMap dm = new FlyweightHashMap(inputdata);
 			for (int i = 0; i < loop_count; i++) {
 				dm.get("key");
 			}
@@ -88,7 +88,7 @@ public class basic02パフォーマンステスト {
 
 			Runtime.getRuntime().gc();
 			Util.begin("DifferenceLinkedHashMap");
-			FlyweightLinkedHashMap dm = new FlyweightLinkedHashMap(inputdata);
+			FlyweightHashMap dm = new FlyweightHashMap(inputdata);
 			for (int i = 0; i < loop_count; i++) {
 				dm.get("key");
 			}
