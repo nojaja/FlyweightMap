@@ -5,28 +5,28 @@ import java.util.*;
 import java.lang.Cloneable;
 
 
-public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements Map<K, V>,Cloneable,Serializable {
+public class FlyweightHashMap<K,V>  extends HashMap<K,V> implements Map<K, V>,Cloneable,Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 7968588409646934881L;
 	private Map<K, V> sourceMap;
-	private Set<K> removeKs = new LinkedHashSet<K>();
+	private Set<K> removeKs = new HashSet<K>();
 
 	//////////////////////////////////////
 	@SuppressWarnings("unused")
-	private FlyweightLinkedHashMap(int initialCapacity, float loadFactor) {
+	private FlyweightHashMap(int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 	}
 
 	@SuppressWarnings("unused")
-	private FlyweightLinkedHashMap(int initialCapacity) {
+	private FlyweightHashMap(int initialCapacity) {
 		super(initialCapacity);
 	}
 
 	@SuppressWarnings("unused")
-	private FlyweightLinkedHashMap() {
+	private FlyweightHashMap() {
 		super();
 	}
 
@@ -37,22 +37,22 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 	 */
 	///////////////////////////////////////
 
-	public FlyweightLinkedHashMap(Map<K, V> source,int initialCapacity, float loadFactor) {
+	public FlyweightHashMap(Map<K, V> source,int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
 		this.sourceMap = source;
 	}
 
-	public FlyweightLinkedHashMap(Map<K, V> source,int initialCapacity) {
+	public FlyweightHashMap(Map<K, V> source,int initialCapacity) {
 		super(initialCapacity);
 		this.sourceMap = source;
 	}
 
-	public FlyweightLinkedHashMap(Map<K, V> source) {
+	public FlyweightHashMap(Map<K, V> source) {
 		super();
 		this.sourceMap = source;
 	}
 
-	public FlyweightLinkedHashMap(Map<K, V> source,Map<? extends K, ? extends V> m) {
+	public FlyweightHashMap(Map<K, V> source,Map<? extends K, ? extends V> m) {
 		super(m);
 		this.sourceMap = source;
 	}
@@ -69,7 +69,7 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 		result = (V) this.sourceMap.get(key);
 
 		if(result instanceof Map){
-			result = new FlyweightLinkedHashMap<K,V>((Map<K, V>)result);
+			result = new FlyweightHashMap<K,V>((Map<K, V>)result);
 			V put = super.put((K) key, (V)result);
 		}else if(result instanceof List){
 			result = new FlyweightArrayList((List)result);
@@ -90,12 +90,21 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 	public void clear() {
 		super.clear();
 		this.removeKs.clear();
-		this.sourceMap = new LinkedHashMap<K,V>();
+		this.sourceMap = new HashMap<K,V>();
 	}
 
 	@Override
 	public V put(K key, V value) {
 		this.removeKs.remove(key);
+		
+
+		if(value instanceof Map){
+			value = (V) new FlyweightHashMap<K,V>((Map<K, V>)value);
+			return super.put((K) key, (V)value);
+		}else if(value instanceof List){
+			value = (V) new FlyweightArrayList((List)value);
+			return super.put((K) key, (V)value);
+		}
 		return super.put(key, value);
 	}
 
@@ -131,7 +140,7 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 	@Override
 	public Set<K> keySet() {
 		Set<K> sourceKs = this.sourceMap.keySet();
-		Set<K> ks = new LinkedHashSet<K>();
+		Set<K> ks = new HashSet<K>();
 		ks.addAll(sourceKs);
 		ks.addAll(super.keySet());
 		ks.removeAll(this.removeKs);
@@ -141,7 +150,7 @@ public class FlyweightLinkedHashMap<K,V>  extends LinkedHashMap<K,V> implements 
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		Set<Map.Entry<K,V>> sourceEs = this.sourceMap.entrySet();
-		Set<Map.Entry<K, V>> es = new LinkedHashSet<Map.Entry<K, V>>();
+		Set<Map.Entry<K, V>> es = new HashSet<Map.Entry<K, V>>();
 		es.addAll(sourceEs);
 		es.addAll(super.entrySet());
 		return (Set<Map.Entry<K, V>>) es;

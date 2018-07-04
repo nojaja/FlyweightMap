@@ -23,7 +23,7 @@ public class basic01動作テスト {
 		data.put("aaa", "bbb");
 		data.put("ccc", "ccc");
 		
-		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
+		FlyweightHashMap<String, Object> fmap = new FlyweightHashMap<String, Object>(data);
 		
 		fmap.clear();
 		assertFalse("キーを更新したあと、clearしたら消えてること",fmap.containsKey("ccc"));
@@ -46,7 +46,7 @@ public class basic01動作テスト {
 		data.put("aaa", "bbb");
 		data.put("ccc", "ccc");
 		
-		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
+		FlyweightHashMap<String, Object> fmap = new FlyweightHashMap<String, Object>(data);
 
 		assertFalse("作成直後でも空でないこと",fmap.isEmpty());
 		
@@ -71,7 +71,7 @@ public class basic01動作テスト {
 		data.put("ddd", "ddd");
 		data.put("eee", "eee");
 		
-		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
+		FlyweightHashMap<String, Object> fmap = new FlyweightHashMap<String, Object>(data);
 		fmap.put("aaa", "zzz");
 		fmap.put("fff", "fff");
 		fmap.remove("aaa");
@@ -107,7 +107,7 @@ public class basic01動作テスト {
 		data.put("aaa", "bbb");
 		data.put("bbb", "bbb");
 		
-		FlyweightLinkedHashMap<String, Object> fmap = new FlyweightLinkedHashMap<String, Object>(data);
+		FlyweightHashMap<String, Object> fmap = new FlyweightHashMap<String, Object>(data);
 		fmap.put("aaa", "zzz");
 		fmap.put("ccc", "zzz");
 		Set<String> keys = fmap.keySet();
@@ -115,8 +115,8 @@ public class basic01動作テスト {
 		
 		Set<String> answer = new LinkedHashSet<String>();
 		answer.add("aaa");
-		answer.add("bbb");
 		answer.add("ccc");
+		answer.add("bbb");
 		Iterator<String> answerIterator = answer.iterator();
 		for (Iterator<String> iterator = keys.iterator(); iterator.hasNext();) {
 			assertEquals(answerIterator.next(),iterator.next());
@@ -131,7 +131,7 @@ public class basic01動作テスト {
 		//HashMap inputdata = Util.readJson(dir+"/MOCK_DATA.json");
 		HashMap<?, ?> inputdata = Util.readJson(dir+"/amedas-rain-1h-recent.json");
 
-		FlyweightLinkedHashMap<String, Object> data1 = new FlyweightLinkedHashMap<String, Object>((Map)inputdata);
+		FlyweightHashMap<String, Object> data1 = new FlyweightHashMap<String, Object>((Map)inputdata);
 
 		Util.begin("keySet");
 		try {
@@ -148,7 +148,7 @@ public class basic01動作テスト {
 		Util.begin("entrySet");
 		try {
 			// 早い
-			for (FlyweightLinkedHashMap.Entry<String, Object> entry : data1.entrySet()) {
+			for (FlyweightHashMap.Entry<String, Object> entry : data1.entrySet()) {
 				entry.getValue();
 			}
 		} catch (Exception e) {
@@ -172,7 +172,7 @@ public class basic01動作テスト {
 		HashMap<?, ?> inputdata = Util.readJson(dir+"/amedas-rain-1h-recent.json");
 		Util.begin("");
 
-		FlyweightLinkedHashMap data1 = new FlyweightLinkedHashMap(inputdata);
+		FlyweightHashMap data1 = new FlyweightHashMap(inputdata);
 		HashMap data2 = (HashMap) inputdata.clone();
 
 		String text1=JSON.encode(data1); 
@@ -192,7 +192,7 @@ public class basic01動作テスト {
 		String dir = System.getProperty("user.dir");
 		HashMap<?, ?> inputdata = Util.readJson(dir+"/testData_CustInqDispMobile.json");
 
-		FlyweightLinkedHashMap test = new FlyweightLinkedHashMap(inputdata);
+		FlyweightHashMap test = new FlyweightHashMap(inputdata);
 		HashMap div_frame_hedder = (HashMap) test.get("div_frame_hedder");
 		String customClass1 = (String) div_frame_hedder.get("customClass1");
 
@@ -216,7 +216,7 @@ public class basic01動作テスト {
 		String dir = System.getProperty("user.dir");
 		HashMap<?, ?> inputdata = Util.readJson(dir+"/testData_CustInqDispMobile.json");
 
-		FlyweightLinkedHashMap test = new FlyweightLinkedHashMap(inputdata);
+		FlyweightHashMap test = new FlyweightHashMap(inputdata);
 		String customClass1;
 		String customClass12;
 		String customClass13;
@@ -227,7 +227,7 @@ public class basic01動作テスト {
 			System.out.println("先変更前："+customClass1);
 		}
 		{
-			HashMap div_frame_hedder = (HashMap) test.get("div_frame_hedder");
+			FlyweightHashMap div_frame_hedder = (FlyweightHashMap) test.get("div_frame_hedder");
 			div_frame_hedder.put("customClass1","hoge");
 		}
 		{
@@ -248,6 +248,8 @@ public class basic01動作テスト {
 		assertFalse(customClass13.equals("hoge"));
 
 		Util.end();
+		// dump the heap
+        Util.dumpHeap("Puttest_heap.bin", true);
 		System.out.println("=========================================");
 	}
 
@@ -258,7 +260,7 @@ public class basic01動作テスト {
 		String dir = System.getProperty("user.dir");
 		HashMap inputdata = Util.readJson(dir+"/testData_CustInqDispMobile.json");
 
-		FlyweightLinkedHashMap test = new FlyweightLinkedHashMap(inputdata);
+		FlyweightHashMap test = new FlyweightHashMap(inputdata);
 		HashMap div_frame_hedder = (HashMap) test.get("div_frame_hedder");
 		String customClass1 = (String) div_frame_hedder.get("customClass1");
 
@@ -288,7 +290,7 @@ public class basic01動作テスト {
 		String dir = System.getProperty("user.dir");
 		HashMap<String, Object> inputdata = (HashMap<String, Object>) Util.readJson(dir+"/testData_CustInqDispMobile.json");
 
-		FlyweightLinkedHashMap test = new FlyweightLinkedHashMap(inputdata);
+		FlyweightHashMap test = new FlyweightHashMap(inputdata);
 		{
 			ArrayList options = (ArrayList) test.get("options");
 			HashMap option = (HashMap) options.get(0);
@@ -336,7 +338,7 @@ public class basic01動作テスト {
 		inputdata.put("aaa", "bbb");
 		inputdata.put("bbb", "bbb");
 		
-		FlyweightLinkedHashMap<String, Object> test = new FlyweightLinkedHashMap<String, Object>(inputdata);
+		FlyweightHashMap<String, Object> test = new FlyweightHashMap<String, Object>(inputdata);
 		//System.out.println(inputdata.toString());
 		//System.out.println(test.toString());
 		

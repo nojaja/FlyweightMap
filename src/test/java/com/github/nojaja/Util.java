@@ -6,8 +6,52 @@ import java.util.HashMap;
 
 import net.arnx.jsonic.JSON;
 
-public class Util {
+import javax.management.MBeanServer;
+import java.lang.management.ManagementFactory;
+import com.sun.management.HotSpotDiagnosticMXBean;
 
+public class Util {
+	private static final String HOTSPOT_BEAN_NAME =
+	         "com.sun.management:type=HotSpotDiagnostic";
+	    // field to store the hotspot diagnostic MBean 
+	private static volatile HotSpotDiagnosticMXBean hotspotMBean;
+	    
+	public static void dumpHeap(String fileName, boolean live) {
+        // initialize hotspot diagnostic MBean
+        initHotspotMBean();
+        try {
+            hotspotMBean.dumpHeap(fileName, live);
+        } catch (RuntimeException re) {
+            throw re;
+        } catch (Exception exp) {
+            throw new RuntimeException(exp);
+        }
+    }
+    // initialize the hotspot diagnostic MBean field
+    private static void initHotspotMBean() {
+        if (hotspotMBean == null) {
+            synchronized (Util.class) {
+                if (hotspotMBean == null) {
+                    hotspotMBean = getHotspotMBean();
+                }
+            }
+        }
+    }
+    // get the hotspot diagnostic MBean from the
+    // platform MBean server
+    private static HotSpotDiagnosticMXBean getHotspotMBean() {
+        try {
+            MBeanServer server = ManagementFactory.getPlatformMBeanServer();
+            HotSpotDiagnosticMXBean bean = 
+                ManagementFactory.newPlatformMXBeanProxy(server,
+                HOTSPOT_BEAN_NAME, HotSpotDiagnosticMXBean.class);
+            return bean;
+        } catch (RuntimeException re) {
+            throw re;
+        } catch (Exception exp) {
+            throw new RuntimeException(exp);
+        }
+    }
 	public static HashMap<?, ?> readJson(String path) throws Exception {
 		HashMap<?, ?> result;
 		File file = new File(path);
@@ -58,6 +102,16 @@ public class Util {
 	}
 	
 	public static final long printFreeMemory() {
+
+		/*
+        // default heap dump file name
+        String fileName = "heap.bin";
+        // by default dump only the live objects
+        boolean live = true;
+        
+		// dump the heap
+        dumpHeap(fileName, live);
+        */
 		long total = Runtime.getRuntime().totalMemory();
 		System.out.println("total => " + total / 1024 + "KB");
 		long free = Runtime.getRuntime().freeMemory();
